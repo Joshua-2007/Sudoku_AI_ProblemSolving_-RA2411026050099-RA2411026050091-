@@ -1,38 +1,84 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Sudoku Solver</title>
+<title>Sudoku AI Solver</title>
 <style>
 body {
     font-family: Arial;
     text-align: center;
-    background: #1e1e2f;
+    background: linear-gradient(135deg,#1e1e2f,#2c2c54);
     color: white;
 }
+
+h2 {
+    margin-top: 20px;
+}
+
 table {
     margin: auto;
     border-collapse: collapse;
+    animation: fadeIn 0.6s ease;
 }
+
 td {
-    border: 1px solid white;
+    border: 1px solid #555;
 }
+
 input {
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     text-align: center;
     font-size: 18px;
+    border: none;
+    outline: none;
+    background: #2e2e48;
+    color: white;
+    transition: 0.2s;
 }
+
+input:focus {
+    background: #444;
+}
+
+.fixed {
+    background: #888;
+    color: black;
+}
+
+.error {
+    background: #ff4d4d !important;
+}
+
+.correct {
+    background: #4dff88 !important;
+}
+
 button {
     margin: 10px;
-    padding: 10px;
-    font-size: 16px;
+    padding: 10px 15px;
+    border: none;
+    background: #00c6ff;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #0099cc;
+    transform: scale(1.1);
+}
+
+@keyframes fadeIn {
+    from {opacity:0; transform:scale(0.9);}
+    to {opacity:1; transform:scale(1);}
 }
 </style>
 </head>
 
 <body>
 
-<h2>Sudoku Solver</h2>
+<h2>Sudoku Solver (CSP)</h2>
 
 <table id="grid"></table>
 
@@ -63,7 +109,7 @@ for(let i=0;i<9;i++){
         if(puzzle[i][j] !== 0){
             input.value = puzzle[i][j];
             input.disabled = true;
-            input.style.background = "#ccc";
+            input.classList.add("fixed");
         }
 
         cell.appendChild(input);
@@ -83,7 +129,50 @@ function getBoard(){
     return board;
 }
 
-function isValid(board, r, c, num){
+function clearHighlights(){
+    for(let i=0;i<9;i++){
+        for(let j=0;j<9;j++){
+            let input = grid.rows[i].cells[j].firstChild;
+            input.classList.remove("error","correct");
+        }
+    }
+}
+
+function check(){
+    let board = getBoard();
+    clearHighlights();
+    let valid = true;
+
+    for(let i=0;i<9;i++){
+        for(let j=0;j<9;j++){
+            let val = board[i][j];
+            if(val === 0) continue;
+
+            board[i][j] = 0;
+
+            if(!isValid(board,i,j,val)){
+                grid.rows[i].cells[j].firstChild.classList.add("error");
+                valid = false;
+            } else {
+                grid.rows[i].cells[j].firstChild.classList.add("correct");
+            }
+
+            board[i][j] = val;
+        }
+    }
+
+    setTimeout(()=>clearHighlights(), 800);
+
+    if(valid && board.flat().every(x=>x!==0)){
+        alert("🎉 Perfect Solution!");
+    } else if(valid){
+        alert("👍 Looks good so far!");
+    } else {
+        alert("❌ There are mistakes!");
+    }
+}
+
+function isValid(board,r,c,num){
     for(let i=0;i<9;i++){
         if(board[r][i]===num || board[i][c]===num) return false;
     }
@@ -125,22 +214,10 @@ function solve(){
                 grid.rows[i].cells[j].firstChild.value = board[i][j];
             }
         }
-        alert("Solved!");
+        alert("✨ Solved!");
     } else {
         alert("No solution");
     }
-}
-
-function check(){
-    let board = getBoard();
-    for(let i=0;i<9;i++){
-        let set = new Set(board[i].filter(x=>x!==0));
-        if(set.size !== board[i].filter(x=>x!==0).length){
-            alert("Wrong!");
-            return;
-        }
-    }
-    alert("Looks good!");
 }
 </script>
 
