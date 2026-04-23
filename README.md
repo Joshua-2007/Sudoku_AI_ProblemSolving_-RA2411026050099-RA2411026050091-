@@ -17,7 +17,9 @@ The following constraints are enforced:
 Each row must contain digits 1–9 without repetition
 Each column must contain digits 1–9 without repetition
 Each 3×3 subgrid must contain digits 1–9 without repetition
+
 ▶️ Execution Steps
+
 Open the interactive website (Sudoku interface in browser)
 A partially filled Sudoku grid is displayed
 Enter values in the empty cells
@@ -26,7 +28,9 @@ Click Solve to automatically fill the grid
 The system displays:
 “Solved!” if completed successfully
 “Wrong!” if constraints are violated
+
 📊 Sample Output
+
 A 9×9 Sudoku grid displayed in the browser
 Pre-filled cells are disabled (cannot be edited)
 User-entered values appear in input fields
